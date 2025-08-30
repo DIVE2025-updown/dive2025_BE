@@ -27,7 +27,6 @@ public class AdoptionService {
         this.adoptionMapper = adoptionMapper;
         this.transferMapper = transferMapper;
         this.transportMapper = transportMapper;
-
     }
 
     public List<RecommendAdoptCenterResponseDto> findAdoptCenterByFromShelter(RecommendAdoptCenterRequestDto recommendAdoptCenterRequestDto) {

@@ -20,14 +20,12 @@ public class TransportService {
 
     private final TransportMapper transportMapper;
     private final ShelterMapper shelterMapper;
-    private final TransferMapper transferMapper;
     private final TransferService transferService;
 
     @Autowired
-    public TransportService(TransportMapper transportMapper, ShelterMapper shelterMapper, TransferMapper transferMapper, TransferService transferService) {
+    public TransportService(TransportMapper transportMapper, ShelterMapper shelterMapper, TransferService transferService) {
         this.transportMapper = transportMapper;
         this.shelterMapper = shelterMapper;
-        this.transferMapper = transferMapper;
         this.transferService = transferService;
     }
 

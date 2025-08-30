@@ -67,7 +67,6 @@ public class AdoptionController {
     @GetMapping("/get-recommend-adopt-center")
     public ResponseEntity<?> getRecommendAdoptCenter(RecommendAdoptCenterRequestDto recommendAdoptCenterRequestDto) {
         List<RecommendAdoptCenterResponseDto> adoptCenterByFromShelter = adoptionService.findAdoptCenterByFromShelter(recommendAdoptCenterRequestDto);
-        log.info("AdoptionController");
         return ResponseEntity.ok(adoptCenterByFromShelter);
     }
 

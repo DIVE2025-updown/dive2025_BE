@@ -16,4 +16,5 @@ public class TrUpdateRequestDto {
     private RequestDecision requestDecision;
     private RequestStatus requestStatus;
     private String message;
+    private Long version;
 }

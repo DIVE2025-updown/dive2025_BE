@@ -4,7 +4,6 @@ import com.example.DIVE2025.domain.transferRequest.Mapper.TransferMapper;
 import com.example.DIVE2025.domain.transferRequest.dto.*;
 import com.example.DIVE2025.domain.transferRequest.enums.RequestDecision;
 import com.example.DIVE2025.domain.transferRequest.enums.RequestStatus;
-import com.example.DIVE2025.domain.transporterRequest.dto.FindTransporterStoreNameDto;
 import com.example.DIVE2025.domain.transporterRequest.enums.TprDecisionStatus;
 import com.example.DIVE2025.domain.transporterRequest.mapper.TransportMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +39,9 @@ public class TransferService {
      * 받는 보호소 기준 수락/거절 선택 기능
      */
     public int updateRequest(TrUpdateRequestDto dto) {
+        long curVersionForLock = transferMapper.getCurVersionForLock(dto.getTrRequestId());
+        dto.setVersion(curVersionForLock);
+
         if(RequestDecision.ACCEPTED.equals(dto.getRequestDecision())){
             dto.setRequestStatus(RequestStatus.TARGET_ACCEPTED);
         }else{

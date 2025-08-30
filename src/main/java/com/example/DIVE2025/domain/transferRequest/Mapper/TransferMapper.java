@@ -25,4 +25,7 @@ public interface TransferMapper {
     int findTrRequestByRescuedId(@Param("rescuedId") Long rescuedId);
 
     int updateRequestStatusByTpr(UpdateTfrStatusResponseByTprDto updateTfrStatusResponseByTprDto);
+
+    // 낙관적 락을 위한 version 가져오기
+    long getCurVersionForLock(@Param("trId")Long trId);
 }
