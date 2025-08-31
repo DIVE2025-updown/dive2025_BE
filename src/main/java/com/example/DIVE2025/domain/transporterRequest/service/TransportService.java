@@ -10,7 +10,9 @@ import com.example.DIVE2025.domain.transporterRequest.entity.TransportRequest;
 import com.example.DIVE2025.domain.transporterRequest.mapper.TransportMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -19,15 +21,15 @@ import java.util.List;
 public class TransportService {
 
     private final TransportMapper transportMapper;
-    private final ShelterMapper shelterMapper;
     private final TransferMapper transferMapper;
+    private final ShelterMapper shelterMapper;
     private final TransferService transferService;
 
     @Autowired
-    public TransportService(TransportMapper transportMapper, ShelterMapper shelterMapper, TransferMapper transferMapper, TransferService transferService) {
+    public TransportService(TransportMapper transportMapper, TransferMapper transferMapper, ShelterMapper shelterMapper, TransferService transferService) {
         this.transportMapper = transportMapper;
-        this.shelterMapper = shelterMapper;
         this.transferMapper = transferMapper;
+        this.shelterMapper = shelterMapper;
         this.transferService = transferService;
     }
 
@@ -57,33 +59,45 @@ public class TransportService {
         return transportMapper.saveTransportRequest(entity);
     }
 
+    @Transactional
     public int updateTransportRequest(UpdateTprRequestDto dto) {
+        long curVersionForLock = transportMapper.getCurVersionForLock(dto.getId());
+        dto.setVersion(curVersionForLock);
+
         int i = transportMapper.updateTransportRequestStatus(dto);
 
         if(i != 1){
-            throw new IllegalStateException("update transport request status failed");
+            throw new OptimisticLockingFailureException("update transport request status failed");
         }
 
         Long transporterId = transportMapper.getTransporterIdById(dto.getId()).getTransporterId();
 
         // TransporterRequest -> TransferRequest 업데이트
+        long curVersionForTrLock = transferMapper.getCurVersionForLock(dto.getTransferRequestId());
         UpdateTfrStatusRequestByTprDto updateDto = UpdateTfrStatusRequestByTprDto.builder()
                 .id(dto.getTransferRequestId())
                 .transporterId(transporterId)
                 .message(dto.getMessage())
                 .tprDecisionStatus(dto.getDecisionStatus())
+                .version(curVersionForTrLock)
                 .build();
 
-        int j = transferService.updateTfrStatusByTpr(updateDto);
-        if(j != 1){
-            throw new IllegalStateException("update transfer request status (by Transport Decision status)failed(2)");
+        int result = transferService.updateTfrStatusByTpr(updateDto);
+        if(result != 1){
+            throw new OptimisticLockingFailureException("update transfer request status (by Transport Decision status)failed");
         }
 
-        return j;
+        return result;
     }
 
     public int deleteTransportRequest(Long transferRequestId) {
-        return transportMapper.deleteTransportRequest(transferRequestId);
+        long curVersionForLock = transportMapper.getCurVersionForLock(transferRequestId);
+        TprDeleteRequestDto tprDeleteRequestDto = TprDeleteRequestDto.builder()
+                .id(transferRequestId)
+                .version(curVersionForLock)
+                .build();
+
+        return transportMapper.deleteTransportRequest(tprDeleteRequestDto);
     }
 
     public List<TprListResponseDto> getAllRequestsByTransporterId(Long transporterId) {

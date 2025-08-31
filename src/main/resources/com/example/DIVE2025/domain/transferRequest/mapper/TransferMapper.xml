@@ -12,19 +12,21 @@
 
     <update id="updateRequestStatus">
         UPDATE transfer_request
-        SET request_status = #{requestStatus}, message = #{message}
-        WHERE id = #{trRequestId};
+        SET request_status = #{requestStatus}, message = #{message}, version = version + 1
+        WHERE id = #{trRequestId} AND
+              version = #{version};
     </update>
 
     <update id="updateRequestStatusByTpr">
         UPDATE transfer_request
-        SET request_status = #{requestStatus}, message = #{message}, transporter_id = #{transporterId}
-        WHERE id = #{id}
+        SET request_status = #{requestStatus}, message = #{message}, transporter_id = #{transporterId}, version = version + 1
+        WHERE id = #{id} AND version = #{version}
     </update>
 
     <delete id="deleteTransferRequest">
         DELETE FROM transfer_request
-        WHERE id = #{id}
+        WHERE id = #{id} AND
+              version = #{version}
     </delete>
 
     <select id="getTransferByFromShelterId"
@@ -80,5 +82,12 @@
         SELECT COUNT(*)
         FROM transfer_request
         WHERE rescued_id = #{rescuedId};
+    </select>
+
+
+    <select id="getCurVersionForLock" resultType="java.lang.Long">
+        SELECT tr.version
+        FROM transfer_request tr
+        WHERE id = #{trId}
     </select>
 </mapper>

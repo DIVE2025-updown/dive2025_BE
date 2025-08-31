@@ -4,10 +4,10 @@ import com.example.DIVE2025.domain.transferRequest.Mapper.TransferMapper;
 import com.example.DIVE2025.domain.transferRequest.dto.*;
 import com.example.DIVE2025.domain.transferRequest.enums.RequestDecision;
 import com.example.DIVE2025.domain.transferRequest.enums.RequestStatus;
-import com.example.DIVE2025.domain.transporterRequest.dto.FindTransporterStoreNameDto;
 import com.example.DIVE2025.domain.transporterRequest.enums.TprDecisionStatus;
 import com.example.DIVE2025.domain.transporterRequest.mapper.TransportMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -40,6 +40,9 @@ public class TransferService {
      * 받는 보호소 기준 수락/거절 선택 기능
      */
     public int updateRequest(TrUpdateRequestDto dto) {
+        long curVersionForLock = transferMapper.getCurVersionForLock(dto.getTrRequestId());
+        dto.setVersion(curVersionForLock);
+
         if(RequestDecision.ACCEPTED.equals(dto.getRequestDecision())){
             dto.setRequestStatus(RequestStatus.TARGET_ACCEPTED);
         }else{
@@ -50,7 +53,18 @@ public class TransferService {
     }
 
     public int deleteRequest(Long id) {
-        return transferMapper.deleteTransferRequest(id);
+        long curVersionForLock = transferMapper.getCurVersionForLock(id);
+        TrDeleteRequestDto trDeleteRequestDto = TrDeleteRequestDto.builder()
+                .id(id)
+                .version(curVersionForLock)
+                .build();
+
+        int result = transferMapper.deleteTransferRequest(trDeleteRequestDto);
+        if(result != 1){
+            throw new OptimisticLockingFailureException("Delete request failed_Version: " + curVersionForLock);
+        }
+
+        return result;
     }
 
     /**
@@ -95,6 +109,7 @@ public class TransferService {
                     .transporterId(dto.getTransporterId())
                     .message(dto.getMessage())
                     .requestStatus(RequestStatus.TRANSPORTER_ACCEPTED)
+                    .version(dto.getVersion())
                     .build();
 
             return transferMapper.updateRequestStatusByTpr(updateData);
@@ -105,6 +120,7 @@ public class TransferService {
                     .transporterId(dto.getTransporterId())
                     .message(dto.getMessage())
                     .requestStatus(RequestStatus.TRANSPORTER_REJECTED)
+                    .version(dto.getVersion())
                     .build();
 
             return transferMapper.updateRequestStatusByTpr(updateData);

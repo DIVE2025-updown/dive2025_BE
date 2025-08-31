@@ -18,11 +18,13 @@ public interface TransportMapper {
 
     FindResultDto findTransportRequestIdByTransferReqeustId(@Param("transferRequestId") Long transferRequestId);
     int updateTransportRequestStatus(UpdateTprRequestDto updateTprRequestDto);
-    int deleteTransportRequest(@Param("id") Long id);
+    int deleteTransportRequest(TprDeleteRequestDto tprDeleteRequestDto);
 
     List<TprListResponseDto> getAllRequestByTransporterId(@Param("transporterId") Long transporterId);
 
     FindTransporterIdResponseDto getTransporterIdById(@Param("transportRequestId") Long transportRequestId);
 
     FindTransporterStoreNameDto getTransporterNameById(@Param("transporterId") Long transporterId);
+
+    long getCurVersionForLock(@Param("trId")Long tpId);
 }

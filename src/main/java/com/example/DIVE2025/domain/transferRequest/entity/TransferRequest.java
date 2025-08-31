@@ -20,4 +20,6 @@ public class TransferRequest {
     private String message;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
+    private Long version;
 }
