@@ -21,7 +21,7 @@ public interface TransferMapper {
     List<TransferRequestResponseDto> getTransferByToShelterId(@Param("toShelterId") Long toShelterId);
 
     int updateRequestStatus(TrUpdateRequestDto trUpdateRequestDto);
-    int deleteTransferRequest(@Param("id") Long id);
+    int deleteTransferRequest(TrDeleteRequestDto trDeleteRequestDto);
     int findTrRequestByRescuedId(@Param("rescuedId") Long rescuedId);
 
     int updateRequestStatusByTpr(UpdateTfrStatusResponseByTprDto updateTfrStatusResponseByTprDto);

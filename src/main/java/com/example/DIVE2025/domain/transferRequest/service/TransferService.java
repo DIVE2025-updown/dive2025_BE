@@ -7,6 +7,7 @@ import com.example.DIVE2025.domain.transferRequest.enums.RequestStatus;
 import com.example.DIVE2025.domain.transporterRequest.enums.TprDecisionStatus;
 import com.example.DIVE2025.domain.transporterRequest.mapper.TransportMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -52,7 +53,18 @@ public class TransferService {
     }
 
     public int deleteRequest(Long id) {
-        return transferMapper.deleteTransferRequest(id);
+        long curVersionForLock = transferMapper.getCurVersionForLock(id);
+        TrDeleteRequestDto trDeleteRequestDto = TrDeleteRequestDto.builder()
+                .id(id)
+                .version(curVersionForLock)
+                .build();
+
+        int result = transferMapper.deleteTransferRequest(trDeleteRequestDto);
+        if(result != 1){
+            throw new OptimisticLockingFailureException("Delete request failed_Version: " + curVersionForLock);
+        }
+
+        return result;
     }
 
     /**

@@ -43,7 +43,7 @@ class transferServiceTest {
          *     private String message;
          */
         TrUpdateRequestDto trUpdateRequestDto = TrUpdateRequestDto.builder()
-                .trRequestId(3L)
+                .trRequestId(47L)
                 .requestDecision(RequestDecision.ACCEPTED)
                 .message("test message")
                 .build();

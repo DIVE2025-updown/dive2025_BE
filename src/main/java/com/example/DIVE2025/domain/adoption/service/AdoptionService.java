@@ -5,11 +5,13 @@ import com.example.DIVE2025.domain.adoption.dto.RecommendAdoptCenterRequestDto;
 import com.example.DIVE2025.domain.adoption.dto.RecommendAdoptCenterResponseDto;
 import com.example.DIVE2025.domain.adoption.mapper.AdoptionMapper;
 import com.example.DIVE2025.domain.transferRequest.Mapper.TransferMapper;
+import com.example.DIVE2025.domain.transferRequest.dto.TrDeleteRequestDto;
 import com.example.DIVE2025.domain.transferRequest.dto.TrSaveRequestDto;
 import com.example.DIVE2025.domain.transferRequest.dto.TransferRequestResponseDto;
 import com.example.DIVE2025.domain.transporterRequest.mapper.TransportMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -47,7 +49,18 @@ public class AdoptionService {
     }
 
     public int deleteRequest(Long id) {
-        return transferMapper.deleteTransferRequest(id);
+        long curVersionForLock = transferMapper.getCurVersionForLock(id);
+        TrDeleteRequestDto trDeleteRequestDto = TrDeleteRequestDto.builder()
+                .id(id)
+                .version(curVersionForLock)
+                .build();
+
+        int result = transferMapper.deleteTransferRequest(trDeleteRequestDto);
+        if(result != 1){
+            throw new OptimisticLockingFailureException("Delete request failed_Version: " + curVersionForLock);
+        }
+
+        return result;
     }
 
     public List<TransferRequestResponseDto> getAllRequestsByAdoptionId(Long adoptionId) {

@@ -12,7 +12,7 @@
 
     <update id="updateRequestStatus">
         UPDATE transfer_request
-        SET request_status = #{requestStatus}, message = #{message}, version = version+1
+        SET request_status = #{requestStatus}, message = #{message}, version = version + 1
         WHERE id = #{trRequestId} AND
               version = #{version};
     </update>
@@ -25,7 +25,8 @@
 
     <delete id="deleteTransferRequest">
         DELETE FROM transfer_request
-        WHERE id = #{id}
+        WHERE id = #{id} AND
+              version = #{version}
     </delete>
 
     <select id="getTransferByFromShelterId"
