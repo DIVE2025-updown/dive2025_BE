@@ -12,13 +12,14 @@
 
     <update id="updateTransportRequestStatus">
         UPDATE transporter_request
-        SET tpr_decision_status = #{decisionStatus}
-        WHERE id = #{id}
+        SET tpr_decision_status = #{decisionStatus}, version = version + 1
+        WHERE id = #{id} AND version = #{version}
     </update>
 
     <delete id="deleteTransportRequest">
         DELETE FROM transporter_request
-        WHERE id = #{id}
+        WHERE id = #{id} AND
+              version = #{version}
     </delete>
 
     <select id="recommendTransportId"
@@ -63,6 +64,12 @@
         SELECT store_name
         FROM transporter
         WHERE id = #{transporterId};
+    </select>
+
+    <select id="getCurVersionForLock" resultType="java.lang.Long">
+        SELECT tp.version
+        FROM transporter_request tp
+        WHERE tp.id = #{trId}
     </select>
 
 

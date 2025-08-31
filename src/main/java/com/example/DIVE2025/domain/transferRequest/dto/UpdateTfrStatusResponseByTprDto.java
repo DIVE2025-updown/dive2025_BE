@@ -15,4 +15,5 @@ public class UpdateTfrStatusResponseByTprDto {
     private String message;
     private Long transporterId;
     private RequestStatus requestStatus;
+    private Long version;
 }

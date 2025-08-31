@@ -15,4 +15,5 @@ public class UpdateTprRequestDto {
     private Long transferRequestId;
     private TprDecisionStatus decisionStatus; // ACCEPT, REJECT
     private String message;
+    private Long version;
 }

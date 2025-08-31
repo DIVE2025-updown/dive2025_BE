@@ -22,7 +22,7 @@ class TransportServiceTest {
     void saveTransportRequest() {
 
         TransportRequestSaveDto transportRequestSaveDto = TransportRequestSaveDto.builder()
-                .transferRequestId(12L)
+                .transferRequestId(47L)
                 .transporterId(1L)
                 .message("이날까지 꼭 옮겨주세요")
                 .fromShelterId(1L)
@@ -37,10 +37,10 @@ class TransportServiceTest {
     void updateTransportRequest() {
 
         UpdateTprRequestDto updateTprRequestDto = UpdateTprRequestDto.builder()
-                .id(2L)
+                .id(8L)
                 .message("nononononononnono")
                 .decisionStatus(TprDecisionStatus.REJECT)
-                .transferRequestId(12L)
+                .transferRequestId(47L)
                 .build();
 
         int i = transportService.updateTransportRequest(updateTprRequestDto);

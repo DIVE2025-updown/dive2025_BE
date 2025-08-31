@@ -19,8 +19,8 @@
 
     <update id="updateRequestStatusByTpr">
         UPDATE transfer_request
-        SET request_status = #{requestStatus}, message = #{message}, transporter_id = #{transporterId}
-        WHERE id = #{id}
+        SET request_status = #{requestStatus}, message = #{message}, transporter_id = #{transporterId}, version = version + 1
+        WHERE id = #{id} AND version = #{version}
     </update>
 
     <delete id="deleteTransferRequest">

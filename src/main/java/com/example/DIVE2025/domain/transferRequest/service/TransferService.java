@@ -109,6 +109,7 @@ public class TransferService {
                     .transporterId(dto.getTransporterId())
                     .message(dto.getMessage())
                     .requestStatus(RequestStatus.TRANSPORTER_ACCEPTED)
+                    .version(dto.getVersion())
                     .build();
 
             return transferMapper.updateRequestStatusByTpr(updateData);
@@ -119,6 +120,7 @@ public class TransferService {
                     .transporterId(dto.getTransporterId())
                     .message(dto.getMessage())
                     .requestStatus(RequestStatus.TRANSPORTER_REJECTED)
+                    .version(dto.getVersion())
                     .build();
 
             return transferMapper.updateRequestStatusByTpr(updateData);
