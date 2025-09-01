@@ -338,6 +338,7 @@
 
             <otherwise>
                 ORDER BY
+                FIELD(r.animal_condition, 'SEVERE', 'MILD', 'NORMAL'),
                 overdue DESC,
                 daysProtected DESC,
                 COALESCE(r.happen_dt, r.rescue_date) ASC
