@@ -250,14 +250,16 @@
             r.shelter_id = #{shelterId}
             AND r.protection_status = 'PROTECTED'
 
-            AND  r.happen_dt = #{date}
-
             <!-- ✅ 기본 포함: (보호기간 초과) OR (질병-보호소 불일치) -->
             AND (
             DATEDIFF(CURRENT_DATE, COALESCE(r.happen_dt, r.rescue_date)) > 10
             OR (r.animal_condition = 'MILD'   AND s.shelter_feature = 'GENERAL')
             OR (r.animal_condition = 'SEVERE' AND (s.shelter_feature = 'GENERAL' OR s.shelter_feature = 'VET'))
             )
+
+            <if test="date != null">
+                AND r.happen_dt = #{date}
+            </if>
 
             <!-- 🔎 질병 불일치만 보고 싶을 때(추가 필터) -->
             <if test="useSeverity">
@@ -301,7 +303,7 @@
         <!-- 동적 정렬 -->
         <choose>
             <when test="sort != null and (sort == 'overdue' or sort == 'daysProtected' or sort == 'happenDt' or sort == 'rescueDate' or sort == 'age' or sort == 'weight')">
-                <choose>
+        <choose>
                     <when test="sort == 'overdue'">        ORDER BY overdue        </when>
                     <when test="sort == 'daysProtected'">  ORDER BY daysProtected  </when>
                     <when test="sort == 'happenDt'">       ORDER BY r.happen_dt    </when>
