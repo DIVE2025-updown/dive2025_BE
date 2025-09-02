@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import java.time.LocalDate;
 import java.util.*;
 
 
@@ -113,13 +114,14 @@ public class RescuedQueryService {
             String sort,
             String order,
             int offset,
-            int limit
+            int limit,
+            LocalDate date
     ) {
         int safeOffset = Math.max(0, offset);
         int safeLimit  = Math.min(Math.max(1, limit), 100);
 
         // ✅ 정렬 화이트리스트: 허용되지 않은 값이면 sort=null (XML에서 기본 정렬 적용)
-        Set<String> allowedSorts = Set.of("overdue", "daysProtected", "happenDt", "rescueDate", "age", "weight");
+        Set<String> allowedSorts = Set.of("overdue", "daysProtected", "happenDt", "rescueDate", "age", "weight", "date");
         String safeSort = (sort != null && allowedSorts.contains(sort)) ? sort : null;
 
         // ✅ 방향 보정: asc 아니면 desc
@@ -128,7 +130,7 @@ public class RescuedQueryService {
         return rescuedQueryMapper.findTransferCandidates(
                 shelterId, usePeriod, dueWithinDays, useSeverity,
                 conditions,    // ✅ condition 대신 conditions 전달
-                safeSort, safeOrder, safeOffset, safeLimit
+                safeSort, safeOrder, safeOffset, safeLimit, date
         );
     }
 }

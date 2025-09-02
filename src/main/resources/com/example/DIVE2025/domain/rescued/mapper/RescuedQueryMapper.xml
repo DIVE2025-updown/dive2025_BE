@@ -250,6 +250,8 @@
             r.shelter_id = #{shelterId}
             AND r.protection_status = 'PROTECTED'
 
+            AND  r.happen_dt = #{date}
+
             <!-- ✅ 기본 포함: (보호기간 초과) OR (질병-보호소 불일치) -->
             AND (
             DATEDIFF(CURRENT_DATE, COALESCE(r.happen_dt, r.rescue_date)) > 10

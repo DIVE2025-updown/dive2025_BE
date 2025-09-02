@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -161,10 +162,11 @@ public class RescuedQueryController {
             @RequestParam(name = "order",          required = false, defaultValue = "desc")   String order,
             @RequestParam(name = "offset",         required = false, defaultValue = "0")      int offset,
             @RequestParam(name = "limit",          required = false, defaultValue = "400")    int limit,
+            @RequestParam(name = "date",           required = false)                          LocalDate date,
             @AuthenticationPrincipal(expression = "shelterId") Long currentShelterId
     ) {
         var list = rescuedQueryService.getTransferCandidates(
-                currentShelterId, usePeriod, dueWithinDays, useSeverity, conditions, sort, order, offset, limit
+                currentShelterId, usePeriod, dueWithinDays, useSeverity, conditions, sort, order, offset, limit, date
         );
         return ResponseEntity.ok(list);
     }

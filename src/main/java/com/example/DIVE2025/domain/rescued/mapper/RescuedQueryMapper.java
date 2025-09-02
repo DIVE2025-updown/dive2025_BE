@@ -5,6 +5,7 @@ import com.example.DIVE2025.domain.rescued.dto.RescuedResponseDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +38,8 @@ public interface RescuedQueryMapper {
             @Param("sort") String sort,
             @Param("order") String order,
             @Param("offset") int offset,
-            @Param("limit") int limit
+            @Param("limit") int limit,
+            @Param("date") LocalDate date
     );
+
 }
