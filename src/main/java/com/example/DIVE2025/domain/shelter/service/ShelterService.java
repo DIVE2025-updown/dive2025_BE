@@ -3,6 +3,7 @@ package com.example.DIVE2025.domain.shelter.service;
 import com.example.DIVE2025.domain.shelter.dto.RecommendRequestDto;
 import com.example.DIVE2025.domain.shelter.dto.RecommendResponseDto;
 import com.example.DIVE2025.domain.shelter.dto.ShelterListResponseDto;
+import com.example.DIVE2025.domain.shelter.dto.UpdateCapacityRequestDto;
 import com.example.DIVE2025.domain.shelter.mapper.ShelterMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,5 +26,14 @@ public class ShelterService {
 
     public List<ShelterListResponseDto> getAllShelters(){
         return shelterMapper.getShelterList();
+    }
+
+    public int updateShelterCapacity(UpdateCapacityRequestDto dto) {
+
+        if (dto.getCurCapacity() > dto.getTotalCapacity()) {
+            throw new IllegalArgumentException("curCapacity cannot be greater than totalCapacity");
+        }
+
+        return shelterMapper.saveShelterCapacity(dto);
     }
 }

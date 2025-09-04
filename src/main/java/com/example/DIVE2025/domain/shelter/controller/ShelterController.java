@@ -3,6 +3,7 @@ package com.example.DIVE2025.domain.shelter.controller;
 import com.example.DIVE2025.domain.shelter.dto.RecommendRequestDto;
 import com.example.DIVE2025.domain.shelter.dto.RecommendResponseDto;
 import com.example.DIVE2025.domain.shelter.dto.ShelterListResponseDto;
+import com.example.DIVE2025.domain.shelter.dto.UpdateCapacityRequestDto;
 import com.example.DIVE2025.domain.shelter.service.ShelterService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,5 +35,12 @@ public class ShelterController {
     public ResponseEntity<?> getAll() {
         List<ShelterListResponseDto> allShelters = shelterService.getAllShelters();
         return ResponseEntity.ok(allShelters);
+    }
+
+    @PostMapping("/update-capacity")
+    public ResponseEntity<?> updateCapacity(@RequestBody UpdateCapacityRequestDto updateCapacityRequestDto){
+        int i = shelterService.updateShelterCapacity(updateCapacityRequestDto);
+
+        return ResponseEntity.ok(i);
     }
 }
