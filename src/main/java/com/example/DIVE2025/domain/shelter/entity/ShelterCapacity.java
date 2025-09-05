@@ -15,5 +15,5 @@ public class ShelterCapacity {
     private Long shelterId;
     private Long totalCapacity;
     private Long curCapacity;
-    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }

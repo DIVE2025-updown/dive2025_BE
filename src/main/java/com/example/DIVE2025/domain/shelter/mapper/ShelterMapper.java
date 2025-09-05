@@ -1,10 +1,7 @@
 package com.example.DIVE2025.domain.shelter.mapper;
 
 import com.example.DIVE2025.domain.rescued.enums.AnimalCondition;
-import com.example.DIVE2025.domain.shelter.dto.GetUsernameResponseDto;
-import com.example.DIVE2025.domain.shelter.dto.RecommendResponseDto;
-import com.example.DIVE2025.domain.shelter.dto.GetUsernameRequestDto;
-import com.example.DIVE2025.domain.shelter.dto.ShelterListResponseDto;
+import com.example.DIVE2025.domain.shelter.dto.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -24,4 +21,6 @@ public interface ShelterMapper {
     GetUsernameResponseDto getUsernameById(GetUsernameRequestDto getUsernameVO);
 
     List<ShelterListResponseDto> getShelterList();
+
+    int saveShelterCapacity(UpdateCapacityRequestDto updateCapacityRequestDto);
 }
